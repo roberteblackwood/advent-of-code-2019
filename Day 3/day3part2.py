@@ -2,7 +2,9 @@ def dothepath(wirepath):
     path = set()
     x = 0
     y = 0
+    steps = {}
     # print(wirepath)
+    totalmovements = 0
     for move in wirepath:
         # print(move)
         direction = move[0]
@@ -13,28 +15,40 @@ def dothepath(wirepath):
             for x1 in range(0, positions):
                 # print("Moving right 1")
                 x += 1
-                path.add((x, y))
+                totalmovements += 1
+                point = (x, y)
+                path.add(point)
+                steps[point] = totalmovements
         elif direction == 'L':
             for x2 in range(0, positions):
                 # print("Moving left 1")
                 x -= 1
-                path.add((x, y))
+                totalmovements += 1
+                point = (x, y)
+                path.add(point)
+                steps[point] = totalmovements
         elif direction == 'U':
             for y1 in range(0, positions):
                 # print("Moving up 1")
                 y += 1
-                path.add((x, y))
+                totalmovements += 1
+                point = (x, y)
+                path.add(point)
+                steps[point] = totalmovements
         elif direction == 'D':
             for y2 in range(0, positions):
                 # print("Moving down 1")
                 y -= 1
-                path.add((x, y))
+                totalmovements += 1
+                point = (x, y)
+                path.add(point)
+                steps[point] = totalmovements
         else:
             print("Bad things are happening...")
-    return path
+    return path, steps
 
 def main():
-    f = open("sample1.txt", "r")
+    f = open("input.txt", "r")
     lines = f.readlines()
     wirepaths = []
     for line in lines:
@@ -42,20 +56,22 @@ def main():
         # print(wirepaths)
 
     path1 = dothepath(wirepaths[0])
-    # print(path1)
+    print(path1[1])
     path2 = dothepath(wirepaths[1])
-    # print(path2)
-    shared = path1.intersection(path2)
+    print(path2[1])
+    shared = path1[0].intersection(path2[0])
     print(shared)
     answer = -1
     for point in shared:
         # print(point)
-        tempsum = abs(point[0]) + abs(point[1])
+        tempsteps1 = path1[1][point]
+        tempsteps2 = path2[1][point]
+        tempsteps = tempsteps1 + tempsteps2
         # print(str(tempsum))
-        if answer < 0 or tempsum < answer:
-            answer = tempsum
-            print("Found closer intersection at " + str(point) + " with sum " + str(answer))
-
+        if answer < 0 or tempsteps < answer:
+            answer = tempsteps
+            print("Found intersection " + str(point) + " with shorter path " + str(tempsteps) + " (" + str(tempsteps1) + " + " + str(tempsteps2) + ")")
+    print("Answer: " + str(answer))
 
 
 if __name__ == "__main__":
